@@ -1,0 +1,60 @@
+    <div id="srclist" style="float:left; height:400px; width:200px; overflow-y:scroll;">
+      <table>
+        <tbody>
+<tr><td>app.ico</td></tr>
+
+
+
+
+<script type="text/javascript">
+  var w = 500;
+  var h = 200;
+  var padding = 20;
+
+  var svg = d3.select("body")
+              .append("svg")
+              .attr("width", w)
+              .attr("height", h);
+
+  var dataset = [
+                  [5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                  [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]
+                ];
+
+      var xScale = d3.scale.linear()
+                     .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                     .range([padding, w - padding]);
+
+      var yScale = d3.scale.linear()
+                     .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                     .range([h - padding, padding]);
+
+      var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom")
+                    .ticks(5);
+
+      svg.selectAll("circle")
+         .data(dataset)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d, i) {
+           return xScale(d[0]);
+         })
+         .attr("cy", function(d) {
+           return yScale(d[1]);
+         })
+         .attr("r", 5);
+
+      svg.append("g")
+         .attr("class", "axis")
+         .attr("transform", "translate(0," + (h - padding) + ")")
+         .call(xAxis);
+
+    </script>
+
+<h1>Analysis#index</h1>
+<p>Find me in app/views/analysis/index.html.erb</p>
+
+
+
