@@ -15,46 +15,67 @@
     <div style="float:left; border:teal solid 1px;">
       <button type="button" onclick=start()>start</button>
     </div>
+    <div id="message"></div>
+
+
 
     <script type="text/javascript">
       var w = 500;
       var h = 300;
       var padding = 20;
       var bottomPadding = 50;
-
+      var dataset = [];
+      var xScale;
+      var yScale;
+      var xAxis;
+      var rects;
       var svg = d3.select("svg")
                   .attr("width", w)
                   .attr("height", h);
-
-      var dataset = [];
-      for (var key in lists) {
-          for (i=0;i<lists[key].count;i++) {
-             dataset.push([Number(i)+1,Number(key)+1]);
-          }
-      }
-
-      var xScale = d3.scale.linear()
-                     .domain([0, d3.max(dataset, function(d) { return d[0]; })])
-                     .range([padding, w - padding]);
-
-      var yScale = d3.scale.linear()
-                     .domain([0, lists.length])
-                     .range([padding, h - bottomPadding]);
-
-      var xAxis = d3.svg.axis()
-                    .scale(xScale)
-                    .orient("bottom")
-                    .ticks(5);
-
-      var rects = svg.selectAll("rect")
-                       .data(dataset)
-                       .enter()
-                       .append("rect");
-
       svg.append("g")
          .attr("class", "axis")
          .attr("transform", "translate(0," + (h - padding) + ")")
-         .call(xAxis);
+
+      $.ajax({
+        type: 'GET',
+        url: 'http://test/analysis/data.json',
+        cache: true,
+        datatype: 'json',
+        success: function( data ) {
+
+          dataset = [];
+          var len = data.length;
+          len = 100;
+          for(var j=0; j < len; j++){
+            for (i=0;i<data[j].count;i++) {
+              dataset.push([Number(i)+1,Number(j)+1]);
+            }
+          }
+
+          xScale = d3.scale.linear()
+                     .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                     .range([padding, w - padding]);
+
+          yScale = d3.scale.linear()
+                     .domain([0, len])
+                     .range([padding, h - bottomPadding]);
+
+          xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom")
+                    .ticks(5);
+          svg.call(xAxis);
+
+          rects = svg.selectAll("rect")
+                     .data(dataset)
+                     .enter()
+                     .append("rect");
+
+        },
+        error: function( data ) {
+          $( '#message' ).html( '<font color="red">Error</font>' );
+        }
+      });
 
 
       function start() {
@@ -72,6 +93,8 @@
 
       }
 
+
+/*
       var sl = document.getElementById( 'srclist' );
       var sScale = d3.scale.linear()
                      .domain([0, sl.scrollHeight])
@@ -84,7 +107,9 @@
                   .attr("y2", 0)
                   .attr("stroke","red")
                   .attr("stroke-width",0.5);
+*/
 
+/*
       sl.onscroll = function()
       {
         var height = this.offsetHeight;
@@ -92,6 +117,6 @@
         ll.attr("y1", sScale(scroll+height))
           .attr("y2", sScale(scroll+height))
       }
-
+*/
     </script>
 

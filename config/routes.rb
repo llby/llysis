@@ -1,5 +1,9 @@
 Llysis::Application.routes.draw do
   get "analysis/index"
+  get "analysis/data"
+  
+  get "analysis/make"
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
