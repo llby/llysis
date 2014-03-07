@@ -44,20 +44,21 @@
         success: function( data ) {
 
           dataset = [];
-          var len = data.length;
-          len = 100;
-          for(var j=0; j < len; j++){
-            for (i=0;i<data[j].count;i++) {
-              dataset.push([Number(i)+1,Number(j)+1]);
-            }
-          }
+          dataset = data;
+//          var len = data.length;
+//          len = 100;
+//          for(var j=0; j < len; j++){
+//            for (i=0;i<data[j].count;i++) {
+//              dataset.push([Number(i)+1,Number(j)+1]);
+//            }
+//          }
 
           xScale = d3.scale.linear()
                      .domain([0, d3.max(dataset, function(d) { return d[0]; })])
                      .range([padding, w - padding]);
 
           yScale = d3.scale.linear()
-                     .domain([0, len])
+                     .domain([0, d3.max(dataset, function(d) { return d[1]; })])
                      .range([padding, h - bottomPadding]);
 
           xAxis = d3.svg.axis()

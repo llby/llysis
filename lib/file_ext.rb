@@ -19,7 +19,23 @@ module FileJson
     end
 
     File.open("var/data.json", 'w') do |f|
-      #f.write "var lists = #{list.to_json}"
+      f.write list.to_json
+    end
+    
+  end
+
+  def make_data
+    list = []
+
+    dataset = File.read("var/data.json")
+    dataset = JSON.parse(dataset)
+    dataset.each_with_index do |data, j|
+      data['count'].times do |i|
+        list << [i+1,j+1];
+      end
+    end
+
+    File.open("var/data2.json", 'w') do |f|
       f.write list.to_json
     end
     
@@ -36,6 +52,7 @@ module FileJson
   end
   
   module_function :make_json
+  module_function :make_data
   module_function :make_grep
 
 end

@@ -7,8 +7,8 @@ class AnalysisController < ApplicationController
   end
   
   def data
-    @j = File.read("var/data.json")
-
+    @j = File.read("var/data2.json")
+    
     respond_to do |format|
       format.html
       format.json { render json: @j }
@@ -16,7 +16,8 @@ class AnalysisController < ApplicationController
   end
 
   def make
-    FileJson.make_json
+    # FileJson.make_json
+    FileJson.make_data
   end
 
 end
