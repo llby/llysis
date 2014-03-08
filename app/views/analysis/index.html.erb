@@ -11,6 +11,15 @@
     </div>
     <div style="float:left; border:teal solid 1px;">
       <button type="button" onclick=start()>ファイルの行数をグラフ化</button>
+      <br>
+        ファイル数：<span id="file_count"></span>
+      <br>
+        最大行数：<span id="max_count"></span>
+      <br>
+      <br>
+      <button type="button" onclick=start()>grep結果をグラフ化</button>
+      <br>
+        <input type="text"></input>
     </div>
     <div id="message"></div>
 
@@ -61,7 +70,7 @@
                          .range([padding, w - padding]);
 
               yScale = d3.scale.linear()
-                         .domain([0, data.length])
+                         .domain([0, dataset.length])
                          .range([padding, h - bottomPadding]);
 
               xAxis = d3.svg.axis()
@@ -126,6 +135,9 @@
              .duration(2000)
              .attr("width", function(d, i) { return xScale(d) - padding; })
              .ease("in");
+
+        $( '#file_count' ).html( dataset.length );
+        $( '#max_count' ).html( d3.max(dataset, function(d) { return d; }) );
 
       }
 
