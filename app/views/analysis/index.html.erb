@@ -57,11 +57,11 @@
               dataset = [];
               dataset = data;
               xScale = d3.scale.linear()
-                         .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                         .domain([0, d3.max(dataset, function(d) { return d; })])
                          .range([padding, w - padding]);
 
               yScale = d3.scale.linear()
-                         .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                         .domain([0, data.length])
                          .range([padding, h - bottomPadding]);
 
               xAxis = d3.svg.axis()
@@ -120,11 +120,11 @@
              .attr("y", function(d, i) { return yScale(i); })
              .attr("width", 0)
              .attr("height", 1)
-             // .attr("fill", function(d) { return "rgb(0, 0, " + (d[0] * 10) + ")"; })
+             // .attr("fill", function(d) { return "rgb(0, 0, " + (d * 10) + ")"; })
              .attr("fill", function(d) { return "rgb(0, 0, 200)"; })
              .transition()
              .duration(2000)
-             .attr("width", function(d, i) { return xScale(d[0]) - padding; })
+             .attr("width", function(d, i) { return xScale(d) - padding; })
              .ease("in");
 
       }
