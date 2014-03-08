@@ -1,19 +1,19 @@
 require "find"
 require 'json'
 
-DEFAULT_PATH = "var/ruby-2.1.1"
+DEFAULT_PATH = "var/redmine-2.5.0"
 
 module FileJson
 
   def make_json
     list = []
 
-    i = 0
     Find.find(DEFAULT_PATH) do |f|
       unless File.directory?(f)
-        tmp = {path: File.basename(f), count: open(f).each{}.lineno}
-        #p tmp
-        i += 1
+        # tmp = {path: File.basename(f), count: open(f).each{}.lineno}
+        fs = f.split("/")
+        fs.slice!(0, 2)
+        tmp = {path: fs.join("/"), count: open(f).each{}.lineno}
         list << tmp
       end
     end
@@ -30,7 +30,7 @@ module FileJson
     dataset = File.read("var/data.json")
     dataset = JSON.parse(dataset)
     dataset.each_with_index do |data, j|
-      data['count'].times do |i|
+      (data['count'] / 10).floor.times do |i|
         list << [i+1,j+1];
       end
     end
