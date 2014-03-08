@@ -1,7 +1,7 @@
 <h1>Analysis#index</h1>
 <p>Find me in app/views/analysis/index.html.erb</p>
 
-    <div id="srclist" style="float:left; height:400px; width:200px; overflow-y:scroll;">
+    <div id="srclist" style="float:left; height:400px; width:300px; overflow-y:scroll;">
       <table>
         <tbody id="filelist"></tbody>
       </table>
@@ -10,7 +10,7 @@
       <svg></svg>
     </div>
     <div style="float:left; border:teal solid 1px;">
-      <button type="button" onclick=start()>start</button>
+      <button type="button" onclick=start()>ファイルの行数をグラフ化</button>
     </div>
     <div id="message"></div>
 
@@ -24,6 +24,7 @@
       var dataset = [];
       var xScale;
       var yScale;
+      var sScale;
       var xAxis;
       var rects;
       var svg = d3.select("svg")
@@ -45,6 +46,75 @@
             $( '#filelist' ).append( '<tr><td>' + data[j]['path'] + '</td></tr>' );
           }
 //          $( '#srclist' ).html( '<table>' + data + '</table>' );
+
+
+          $.ajax({
+            type: 'GET',
+            url: 'http://192.168.33.10:3000/analysis/data.json',
+            cache: true,
+            datatype: 'json',
+            success: function( data ) {
+
+            dataset = [];
+            dataset = data;
+/*
+            len = data.length;
+//          len = 200;
+            for(var j=0; j < len; j++){
+              for (i=0;i<data[j].count/10;i++) {
+                dataset.push([Number(i)+1,Number(j)+1]);
+              }
+            }
+*/
+            xScale = d3.scale.linear()
+                       .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                       .range([padding, w - padding]);
+
+            yScale = d3.scale.linear()
+                       .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                       .range([padding, h - bottomPadding]);
+
+            xAxis = d3.svg.axis()
+                      .scale(xScale)
+                      .orient("bottom")
+                      .ticks(5);
+
+            svg.append("g")
+               .attr("class", "axis")
+               .attr("transform", "translate(0," + (h - padding) + ")")
+               .call(xAxis);
+
+              rects = svg.selectAll("rect")
+                         .data(dataset)
+                         .enter()
+                         .append("rect");
+
+              var sl = document.getElementById( 'srclist' );
+              sScale = d3.scale.linear()
+                         .domain([0, sl.scrollHeight])
+                         .range([padding, h - bottomPadding]);
+
+              var ll = svg.append("line")
+                          .attr("x1", 0)
+                          .attr("y1", 0)
+                          .attr("x2", w)
+                          .attr("y2", 0)
+                          .attr("stroke","red")
+                          .attr("stroke-width",0.5);
+
+              sl.onscroll = function()
+              {
+                var height = this.offsetHeight;
+                var scroll = this.scrollTop;
+                ll.attr("y1", sScale(scroll+height))
+                  .attr("y2", sScale(scroll+height))
+              }
+
+            },
+            error: function( data ) {
+              $( '#message' ).html( '<font color="red">Error2</font>' );
+            }
+          });
         },
         error: function( data ) {
           $( '#message' ).html( '<font color="red">Error1</font>' );
@@ -52,52 +122,6 @@
       });
 
 
-      $.ajax({
-        type: 'GET',
-        url: 'http://192.168.33.10:3000/analysis/data.json',
-        cache: true,
-        datatype: 'json',
-        success: function( data ) {
-
-          dataset = [];
-          dataset = data;
-/*
-          len = data.length;
-//          len = 200;
-          for(var j=0; j < len; j++){
-            for (i=0;i<data[j].count/10;i++) {
-              dataset.push([Number(i)+1,Number(j)+1]);
-            }
-          }
-*/
-          xScale = d3.scale.linear()
-                     .domain([0, d3.max(dataset, function(d) { return d[0]; })])
-                     .range([padding, w - padding]);
-
-          yScale = d3.scale.linear()
-                     .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-                     .range([padding, h - bottomPadding]);
-
-          xAxis = d3.svg.axis()
-                    .scale(xScale)
-                    .orient("bottom")
-                    .ticks(5);
-
-          svg.append("g")
-             .attr("class", "axis")
-             .attr("transform", "translate(0," + (h - padding) + ")")
-             .call(xAxis);
-
-          rects = svg.selectAll("rect")
-                     .data(dataset)
-                     .enter()
-                     .append("rect");
-
-        },
-        error: function( data ) {
-          $( '#message' ).html( '<font color="red">Error2</font>' );
-        }
-      });
 
 
       function start() {
@@ -115,30 +139,5 @@
 
       }
 
-
-/*
-      var sl = document.getElementById( 'srclist' );
-      var sScale = d3.scale.linear()
-                     .domain([0, sl.scrollHeight])
-                     .range([padding, h - bottomPadding]);
-
-      var ll = svg.append("line")
-                  .attr("x1", 0)
-                  .attr("y1", 0)
-                  .attr("x2", w)
-                  .attr("y2", 0)
-                  .attr("stroke","red")
-                  .attr("stroke-width",0.5);
-*/
-
-/*
-      sl.onscroll = function()
-      {
-        var height = this.offsetHeight;
-        var scroll = this.scrollTop;
-        ll.attr("y1", sScale(scroll+height))
-          .attr("y2", sScale(scroll+height))
-      }
-*/
     </script>
 

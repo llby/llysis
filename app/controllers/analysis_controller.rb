@@ -26,7 +26,7 @@ class AnalysisController < ApplicationController
   end
 
   def make
-    # FileJson.make_json
+    FileJson.make_json
     FileJson.make_data
   end
 
