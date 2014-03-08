@@ -8,13 +8,30 @@ module FileJson
   def make_json
     list = []
 
+    excludes = []
+    excludes << "^#{DEFAULT_PATH}/lib/plugins/"
+    excludes << "^#{DEFAULT_PATH}/test/"
+    excludes << "^#{DEFAULT_PATH}/doc/"
+    excludes << "\.png$"
+
     Find.find(DEFAULT_PATH) do |f|
+      
+      is_add = true
+      excludes.each do |e|
+        if /#{e}/ =~ f
+          is_add = false
+          break
+        end
+      end
+
+      if is_add
       unless File.directory?(f)
         # tmp = {path: File.basename(f), count: open(f).each{}.lineno}
         fs = f.split("/")
         fs.slice!(0, 2)
         tmp = {path: fs.join("/"), count: open(f).each{}.lineno}
         list << tmp
+      end
       end
     end
 
