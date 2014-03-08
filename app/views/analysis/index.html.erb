@@ -3,10 +3,7 @@
 
     <div id="srclist" style="float:left; height:400px; width:200px; overflow-y:scroll;">
       <table>
-        <tbody>
-<tr><td>file1.txt</td></tr>
-<tr><td>file2.txt</td></tr>
-        </tbody>
+        <tbody id="filelist"></tbody>
       </table>
     </div>
     <div style="float:left; border:red solid 1px;">
@@ -20,10 +17,10 @@
 
 
     <script type="text/javascript">
-      var w = 500;
-      var h = 300;
+      var w = 600;
+      var h = 400;
       var padding = 20;
-      var bottomPadding = 50;
+      var bottomPadding = 30;
       var dataset = [];
       var xScale;
       var yScale;
@@ -38,21 +35,41 @@
 
       $.ajax({
         type: 'GET',
-        url: 'http://test/analysis/data.json',
+        url: 'http://192.168.33.10:3000/analysis/filelist.json',
+        cache: false,
+        datatype: 'json',
+        success: function( data ) {
+
+          len = data.length;
+          for(var j=0; j < len; j++){
+            $( '#filelist' ).append( '<tr><td>' + data[j]['path'] + '</td></tr>' );
+          }
+//          $( '#srclist' ).html( '<table>' + data + '</table>' );
+        },
+        error: function( data ) {
+          $( '#message' ).html( '<font color="red">Error1</font>' );
+        }
+      });
+
+
+      $.ajax({
+        type: 'GET',
+        url: 'http://192.168.33.10:3000/analysis/data.json',
         cache: true,
         datatype: 'json',
         success: function( data ) {
 
           dataset = [];
           dataset = data;
-//          var len = data.length;
-//          len = 100;
-//          for(var j=0; j < len; j++){
-//            for (i=0;i<data[j].count;i++) {
-//              dataset.push([Number(i)+1,Number(j)+1]);
-//            }
-//          }
-
+/*
+          len = data.length;
+//          len = 200;
+          for(var j=0; j < len; j++){
+            for (i=0;i<data[j].count/10;i++) {
+              dataset.push([Number(i)+1,Number(j)+1]);
+            }
+          }
+*/
           xScale = d3.scale.linear()
                      .domain([0, d3.max(dataset, function(d) { return d[0]; })])
                      .range([padding, w - padding]);
@@ -65,7 +82,11 @@
                     .scale(xScale)
                     .orient("bottom")
                     .ticks(5);
-          svg.call(xAxis);
+
+          svg.append("g")
+             .attr("class", "axis")
+             .attr("transform", "translate(0," + (h - padding) + ")")
+             .call(xAxis);
 
           rects = svg.selectAll("rect")
                      .data(dataset)
@@ -74,7 +95,7 @@
 
         },
         error: function( data ) {
-          $( '#message' ).html( '<font color="red">Error</font>' );
+          $( '#message' ).html( '<font color="red">Error2</font>' );
         }
       });
 
@@ -83,8 +104,8 @@
         
         rects.attr("x", 0)
              .attr("y", function(d, i) { return yScale(d[1]); })
-             .attr("width", 5)
-             .attr("height", 5)
+             .attr("width", 1)
+             .attr("height", 1)
              // .attr("fill", function(d) { return "rgb(0, 0, " + (d[0] * 10) + ")"; })
              .attr("fill", function(d) { return "rgb(0, 0, 200)"; })
              .transition()
