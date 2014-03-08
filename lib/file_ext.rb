@@ -43,13 +43,10 @@ module FileJson
 
   def make_data
     list = []
-
     dataset = File.read("var/data.json")
     dataset = JSON.parse(dataset)
     dataset.each_with_index do |data, j|
-      (data['count'] / 10).floor.times do |i|
-        list << [i+1,j+1];
-      end
+      list << [data['count'],j+1]
     end
 
     File.open("var/data2.json", 'w') do |f|
