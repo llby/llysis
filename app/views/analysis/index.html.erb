@@ -19,7 +19,7 @@
       <br>
       <button type="button" onclick=grep()>grep結果をグラフ化</button>
       <br>
-        <input type="text"></input>
+        <input id='con' type="text"></input>
     </div>
     <div id="message"></div>
 
@@ -144,9 +144,10 @@
 
       function grep() {
 
+        con = document.getElementById( 'con' );
         $.ajax({
           type: 'GET',
-          url: 'http://192.168.33.10:3000/analysis/grep.json',
+          url: 'http://192.168.33.10:3000/analysis/grep/'+con.value+'.json',
           cache: false,
           datatype: 'json',
           success: function( data ) {
