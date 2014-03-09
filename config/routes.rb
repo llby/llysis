@@ -2,6 +2,7 @@ Llysis::Application.routes.draw do
   get "analysis/index"
   get "analysis/filelist"
   get "analysis/data"
+  get "analysis/grep"
   
   get "analysis/make"
   

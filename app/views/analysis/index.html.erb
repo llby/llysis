@@ -17,7 +17,7 @@
         最大行数：<span id="max_count"></span>
       <br>
       <br>
-      <button type="button" onclick=start()>grep結果をグラフ化</button>
+      <button type="button" onclick=grep()>grep結果をグラフ化</button>
       <br>
         <input type="text"></input>
     </div>
@@ -36,6 +36,7 @@
       var sScale;
       var xAxis;
       var rects;
+      var results;
       var sl;
       var svg = d3.select("svg")
                   .attr("width", w)
@@ -139,6 +140,36 @@
         $( '#file_count' ).html( dataset.length );
         $( '#max_count' ).html( d3.max(dataset, function(d) { return d; }) );
 
+      }
+
+      function grep() {
+
+        $.ajax({
+          type: 'GET',
+          url: 'http://192.168.33.10:3000/analysis/grep.json',
+          cache: false,
+          datatype: 'json',
+          success: function( data ) {
+
+            results = svg.append("g")
+                         .selectAll("rect")
+                         .data(data)
+                         .enter()
+                         .append("rect");
+
+            results.attr("x", function(d, i) { return xScale(d[1]); })
+                   .attr("y", function(d, i) { return yScale(d[0]); })
+                   .attr("width", 5)
+                   .attr("height", 1)
+                   .attr("fill", "rgb(0, 200, 0)");
+              // .attr("fill", function(d) { return "rgb(0, 0, " + (d * 10) + ")"; })
+              //   .transition()
+              //   .duration(2000)
+              //   .attr("width", function(d, i) { return xScale(d) - padding; })
+              //   .ease("in");
+
+          }
+        });
       }
 
     </script>
