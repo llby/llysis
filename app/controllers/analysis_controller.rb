@@ -47,9 +47,15 @@ class AnalysisController < ApplicationController
         ress = res.split(":")
         resdata << [ress[0],ress[1]]
       end
+#p resdata.count
+      resdata.sort!
 
       @j = File.read("var/data.json")
       filelist = JSON.parse(@j)
+      filelist.sort!{|a,b|
+        a['path'] <=> b['path']
+      }
+
       index = 0
       filelist.each_with_index do |list, k|
 
@@ -66,6 +72,8 @@ class AnalysisController < ApplicationController
 
       end
     end
+
+#p datalist.count
 
     @j = datalist.to_json
 
