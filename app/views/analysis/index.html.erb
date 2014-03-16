@@ -37,13 +37,18 @@
       var xAxis;
       var rects;
       var results;
+      var axises;
       var sl;
       var svg = d3.select("svg")
                   .attr("width", w)
                   .attr("height", h);
-      svg.append("g")
-         .attr("class", "axis")
-         .attr("transform", "translate(0," + (h - padding) + ")")
+      rects = svg.append("g")
+                 .selectAll("rect")
+      axises = svg.append("g")
+                  .attr("class", "axis")
+                  .attr("transform", "translate(0," + (h - 20) + ")")
+      results = svg.append("g")
+                   .selectAll("rect")
 
       $.ajax({
         type: 'GET',
@@ -79,15 +84,13 @@
                         .orient("bottom")
                         .ticks(5);
 
-              svg.append("g")
-                 .attr("class", "axis")
-                 .attr("transform", "translate(0," + (h - 20) + ")")
-                 .call(xAxis);
+              axises.call(xAxis);
 
-              rects = svg.selectAll("rect")
-                         .data(dataset)
-                         .enter()
-                         .append("rect");
+              rects = rects.data(dataset);
+              rects.enter()
+                   .append("rect");
+              rects.exit()
+                   .remove();
 
               sl = document.getElementById( 'srclist' );
               var smax = sl.scrollHeight - sl.offsetHeight;
@@ -109,6 +112,9 @@
                 ll.attr("y1", sScale(this.scrollTop / smax))
                   .attr("y2", sScale(this.scrollTop / smax));
               }
+
+              $( '#file_count' ).html( dataset.length );
+              $( '#max_count' ).html( d3.max(dataset, function(d) { return d; }) );
 
             },
             error: function( data ) {
@@ -137,9 +143,6 @@
              .attr("width", function(d, i) { return xScale(d) - padding; })
              .ease("in");
 
-        $( '#file_count' ).html( dataset.length );
-        $( '#max_count' ).html( d3.max(dataset, function(d) { return d; }) );
-
       }
 
       function grep() {
@@ -152,22 +155,17 @@
           datatype: 'json',
           success: function( data ) {
 
-            results = svg.append("g")
-                         .selectAll("rect")
-                         .data(data)
-                         .enter()
-                         .append("rect");
+            results = results.data(data);
+            results.enter()
+                   .append("rect");
+            results.exit()
+                   .remove();
 
             results.attr("x", function(d, i) { return xScale(d[1]); })
                    .attr("y", function(d, i) { return yScale(d[0]); })
                    .attr("width", 5)
                    .attr("height", 1)
                    .attr("fill", "rgb(0, 200, 0)");
-              // .attr("fill", function(d) { return "rgb(0, 0, " + (d * 10) + ")"; })
-              //   .transition()
-              //   .duration(2000)
-              //   .attr("width", function(d, i) { return xScale(d) - padding; })
-              //   .ease("in");
 
           }
         });
