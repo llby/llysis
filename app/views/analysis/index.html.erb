@@ -1,25 +1,31 @@
-<h1>Analysis#index</h1>
-<p>Find me in app/views/analysis/index.html.erb</p>
+<h1>Llysis</h1>
+<p>開発中に行う作業の結果を、静的解析ツールで視覚的に分かりやすくしてみる。<br>
+サンプルソース　<b>redmine-2.5.0</b>
+</p>
 
-    <div id="srclist" style="float:left; height:400px; width:400px; overflow-y:scroll;">
+    <div id="srclist" style="float:left; border:teal solid 1px; height:407px; width:400px; overflow-y:scroll;">
       <table>
         <tbody id="filelist"></tbody>
       </table>
     </div>
-    <div style="float:left; border:red solid 1px;">
+    <div style="float:left; border:teal solid 1px;">
       <svg></svg>
     </div>
     <div style="float:left; border:teal solid 1px;">
-      <button type="button" onclick=start()>ファイルの行数をグラフ化</button>
-      <br>
+      <fieldset>
+        <legend>count</legend>
         ファイル数：<span id="file_count"></span>
-      <br>
+        <br>
         最大行数：<span id="max_count"></span>
-      <br>
-      <br>
-      <button type="button" onclick=grep()>grep結果をグラフ化</button>
-      <br>
+        <br>
+        <button type="button" onclick=start()>行数をグラフ化</button>
+      </fieldset>
+      <fieldset>
+        <legend>grep</legend>
         <input id='con' type="text"></input>
+        <br>
+        <button type="button" onclick=grep()>結果をグラフ化</button>
+      </fieldset>
     </div>
     <div id="message"></div>
 
@@ -52,7 +58,7 @@
 
       $.ajax({
         type: 'GET',
-        url: 'http://192.168.33.10:3000/analysis/filelist.json',
+        url: "http://<%= request.server_name %>:<%= request.server_port %>/analysis/filelist.json",
         cache: false,
         datatype: 'json',
         success: function( data ) {
@@ -64,7 +70,7 @@
 
           $.ajax({
             type: 'GET',
-            url: 'http://192.168.33.10:3000/analysis/data.json',
+            url: 'http://<%= request.server_name %>:<%= request.server_port %>/analysis/data.json',
             cache: true,
             datatype: 'json',
             success: function( data ) {
@@ -150,7 +156,7 @@
         con = document.getElementById( 'con' );
         $.ajax({
           type: 'GET',
-          url: 'http://192.168.33.10:3000/analysis/grep/'+con.value+'.json',
+          url: 'http://<%= request.server_name %>:<%= request.server_port %>/analysis/grep/'+con.value+'.json',
           cache: false,
           datatype: 'json',
           success: function( data ) {
