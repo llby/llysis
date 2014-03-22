@@ -3,6 +3,7 @@ Llysis::Application.routes.draw do
   get "analysis/filelist"
   get "analysis/data"
   get "analysis/grep/:con" => "analysis#grep"
+  get "analysis/coverage"
   
   get "analysis/make"
   

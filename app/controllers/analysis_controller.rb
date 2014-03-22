@@ -8,8 +8,6 @@ class AnalysisController < ApplicationController
   
   def filelist
     @j = File.read("var/data.json")
-    @list = JSON.parse(@j)
-
     respond_to do |format|
       format.html
       format.json { render json: @j }
@@ -18,7 +16,6 @@ class AnalysisController < ApplicationController
 
   def data
     @j = File.read("var/data2.json")
-    
     respond_to do |format|
       format.html
       format.json { render json: @j }
@@ -26,8 +23,9 @@ class AnalysisController < ApplicationController
   end
 
   def make
-    FileJson.make_json
-    FileJson.make_data
+#    FileJson.make_json
+#    FileJson.make_data
+#    FileJson.make_coverage
   end
 
   def grep
@@ -38,6 +36,8 @@ class AnalysisController < ApplicationController
       result = ""
       begin
         result = `grep -HIinr #{con} #{DEFAULT_PATH}`
+        result.encode!("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?')
+        result.encode!(Encoding::UTF_8)
       rescue
         puts "error"
       end
@@ -76,7 +76,14 @@ class AnalysisController < ApplicationController
 #p datalist.count
 
     @j = datalist.to_json
+    respond_to do |format|
+      format.html
+      format.json { render json: @j }
+    end
+  end
 
+  def coverage
+    @j = File.read("var/data4.json")
     respond_to do |format|
       format.html
       format.json { render json: @j }

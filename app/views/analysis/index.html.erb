@@ -26,6 +26,10 @@
         <br>
         <button type="button" onclick=grep()>結果をグラフ化</button>
       </fieldset>
+      <fieldset>
+        <legend>coverage</legend>
+        <button type="button" onclick=coverage()>カバレッジをグラフ化</button>
+      </fieldset>
     </div>
     <div id="message"></div>
 
@@ -169,7 +173,32 @@
 
             results.attr("x", function(d, i) { return xScale(d[1]); })
                    .attr("y", function(d, i) { return yScale(d[0]); })
-                   .attr("width", 5)
+                   .attr("width", 1)
+                   .attr("height", 1)
+                   .attr("fill", "rgb(0, 200, 0)");
+
+          }
+        });
+      }
+
+      function coverage() {
+
+        $.ajax({
+          type: 'GET',
+          url: 'http://<%= request.server_name %>:<%= request.server_port %>/analysis/coverage.json',
+          cache: false,
+          datatype: 'json',
+          success: function( data ) {
+
+            results = results.data(data);
+            results.enter()
+                   .append("rect");
+            results.exit()
+                   .remove();
+
+            results.attr("x", function(d, i) { return xScale(d[1]); })
+                   .attr("y", function(d, i) { return yScale(d[0]); })
+                   .attr("width", 1)
                    .attr("height", 1)
                    .attr("fill", "rgb(0, 200, 0)");
 
